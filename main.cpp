@@ -30,7 +30,18 @@ foundword create_found_word(string word, int x,int y, string dir)
 	toreturn.word = word;
 	toreturn.location = temp; 
 	toreturn.dir = dir;
+	cout<<word<<"|"<<x<<"|"<<y<<"|"<<dir<<"\n";
 	return toreturn;
+}
+
+string determineDir(int dy,int dx)
+{
+	string dir = "";
+	if(dy==-1)dir+="u";
+	if(dy ==1)dir+="d";
+	if(dx ==1)dir+="r";
+	if(dx==-1)dir+="l";
+	return dir;
 }
 
 //Basic function to determine if the char getting input is a digit
@@ -126,30 +137,59 @@ if(in.is_open())
 				//Check each word in word bank.
 				if(wordSearch[i][j] == wordBank[t][0])
 				{
-					cout<<"Found the letter: "<<wordBank[t][0]<<"\n";
 					if(wordBank[t].length()<=1)
 					{
-						found.push_back(create_found_word(wordBank[t],i,j,"N/A"));
+						found.push_back(create_found_word(wordBank[t],j,i,"N/A"));
 					}
 					else
 					{
 						//Find direction
-						//
-						for(int z = 0; z < wordBank[t].length(); z++)
+						char toFind = wordBank[t][1];
+						bool itDone;
+						for(int x = -1; x <=1; x++)
 						{
-						
+							for(int y = -1; y <=1; y++)
+							{
+								//Check that it isnt the starting square and that everything is in index 
+								if((x!=0 || y!=0)&&!(i+x<0||i+x>=height)&&!(j+y<0||j+y>=wordSearch[0].length()))
+								{
+									if(wordSearch[x+i][y+j] ==toFind)
+									{
+										int wlen = wordBank[t].length();
+										int fi = i+(x*wlen);
+										int fj = j+(y*wlen);
+										//If the final i and final j are outside the array it is automatically false.
+										bool isRight = (!(fi < 0 || fi >height)&&!(fj<0||fj>wordSearch[0].length()));
+										if(wlen >=3)
+										{
+										for(int z = 2; z < wlen&&isRight; z++)
+										{
+											//Determine if each character in the wordBank matches
+											if(!(wordBank[t][z]==wordSearch[i+(x*z)][j+(y*z)]))
+											{
+											isRight =false;
+											}
+										}
+										}
+										//Finally, add in the word to the foudn list.
+										if(isRight)
+										{	
+										found.push_back(create_found_word(wordBank[t],j,i,determineDir(x,y)));
+										}	
+									}	
+								}
+							}
 						}
 					}
 				}
 			}
 		}
-	}	
+	}
 }
 else
 {
 	cout<<"File was not opened.\n";
 }
-
 out.open(argv[2]);
 //Write each word found to the file.
 if(out)
