@@ -103,12 +103,12 @@ if(in.is_open())
 	}
 
 //Just showing that I have successfully read in the word search and closing the ifstream.
-	cout<<"Full Word Search:\n";
+	cout<<"Full Word Search:\n\n";
 	for(int i = 0; i < wordSearch.size(); i++)
 	{
 		cout<<wordSearch[i]<<"\n";
 	}
-	cout<<"Height: "<<height<<"\n";
+	cout<<"\nHeight: "<<height<<"\n";
 	cout<<"\n"<<"Reading in word bank.\n";
 //Reading in the word bank.
 	wordBank = new string[wbanklen];
@@ -120,11 +120,6 @@ if(in.is_open())
 	}	
 	in.close();
 	//file input is now complete.
-	cout<<"Full word bank:\n";
-	for(int i = 0; i < wbanklen;i++)
-	{
-		cout<<wordBank[i]<<"\n";
-	}
 	cout<<"Beginning to solve word search.\n";
 	for(int i = 0; i <height;i++)
 	{
@@ -146,8 +141,9 @@ if(in.is_open())
 						//Find direction
 						char toFind = wordBank[t][1];
 						bool itDone;
-						for(int x = -1; x <=1; x++)
+						for(int x = -2; x <=1; x++)
 						{
+						
 							for(int y = -1; y <=1; y++)
 							{
 								//Check that it isnt the starting square and that everything is in index 
@@ -155,15 +151,19 @@ if(in.is_open())
 								{
 									if(wordSearch[x+i][y+j] ==toFind)
 									{
-										int wlen = wordBank[t].length();
-										int fi = i+(x*wlen);
-										int fj = j+(y*wlen);
+										int wlen = wordBank[t].length()-1;
+										int fi = i+x*wlen;
+										int fj = j+y*wlen;
 										//If the final i and final j are outside the array it is automatically false.
 										bool isRight = (!(fi < 0 || fi >height)&&!(fj<0||fj>wordSearch[0].length()));
 										if(wlen >=3)
 										{
 										for(int z = 2; z < wlen&&isRight; z++)
 										{
+											if(x == -1)
+											{
+											cout<<wordBank[t][z]<<" and "<<wordSearch[i+x*z][j+y*z]<<"\n";
+											}
 											//Determine if each character in the wordBank matches
 											if(!(wordBank[t][z]==wordSearch[i+(x*z)][j+(y*z)]))
 											{
