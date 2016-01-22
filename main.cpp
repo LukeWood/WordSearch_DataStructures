@@ -34,6 +34,19 @@ foundword create_found_word(string word, int x,int y, string dir)
 	return toreturn;
 }
 
+bool wordFound(string word, vector<foundword> fwords)
+{
+bool toreturn = false;
+for(int i = 0; i < fwords.size(); i++)
+{
+if(word.compare(fwords[i].word) ==0)
+{
+toreturn = true;
+}
+}
+return toreturn;
+}
+
 string determineDir(int dy,int dx)
 {
 	string dir = "";
@@ -102,15 +115,14 @@ if(in.is_open())
 		}
 	}
 
-//Just showing that I have successfully read in the word search and closing the ifstream.
+	//Just showing that I have successfully read in the word search and closing the ifstream.
 	cout<<"Full Word Search:\n\n";
 	for(int i = 0; i < wordSearch.size(); i++)
 	{
 		cout<<wordSearch[i]<<"\n";
 	}
-	cout<<"\nHeight: "<<height<<"\n";
 	cout<<"\n"<<"Reading in word bank.\n";
-//Reading in the word bank.
+	//Reading in the word bank.
 	wordBank = new string[wbanklen];
 	for(int i = 0; i < wbanklen;i++)
 	{
@@ -158,7 +170,7 @@ if(in.is_open())
 										bool isRight = (!(fi < 0 || fi >height)&&!(fj<0||fj>wordSearch[0].length()));
 										if(wlen >=3)
 										{
-										for(int z = 2; z < wlen&&isRight; z++)
+										for(int z = 2; z <= wlen&&isRight; z++)
 										{
 											if(x == -1)
 											{
@@ -191,12 +203,21 @@ else
 	cout<<"File was not opened.\n";
 }
 out.open(argv[2]);
-//Write each word found to the file.
+//Write each word to the file.
 if(out)
 {
+//Write out words that were found
 for(int i = 0; i < found.size(); i++)
 {
 	write_found_word(found[i],out);
+}
+//Write out words that werent found.
+for(int i = 0; i < wbanklen; i++)
+{
+if(!wordFound(wordBank[i],found))
+{
+write_found_word(create_found_word(wordBank[i],-1,-1,"nf"),out);
+}
 }
 }
 out.close();
