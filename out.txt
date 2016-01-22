@@ -1,5 +1,0 @@
-hello|0|0|r
-haha|0|0|dr
-oemd|4|0|d
-aale|3|3|l
-cantbefound|-1|-1|nf
