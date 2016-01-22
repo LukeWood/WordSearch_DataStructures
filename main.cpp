@@ -34,6 +34,7 @@ foundword create_found_word(string word, int x,int y, string dir)
 	return toreturn;
 }
 
+//determine if the word was found
 bool wordFound(string word, vector<foundword> fwords)
 {
 bool toreturn = false;
@@ -47,6 +48,7 @@ toreturn = true;
 return toreturn;
 }
 
+//determine the direction string based on the input numbers
 string determineDir(int dy,int dx)
 {
 	string dir = "";
@@ -69,18 +71,27 @@ void write_found_word(const foundword wfound, ofstream& file)
 file<<wfound.word<<"|"<<wfound.location.first<<"|"<<wfound.location.second<<"|"<<wfound.dir<<"\n";
 }
 
+//Reformats the .in filename to a .out filename
+string reformatName(string fileName)
+{
+string outName = fileName.substr(0,fileName.find_last_of("."));
+outName = outName+".out";
+return outName;
+}
+
 //FUNCTION DECLARATIONS END
 
 //MAIN BEGIN
 int main(int argc, char*argv[])
 {
 //Check to ensure that there are two strings passed to the program, the input file then output file.
-if(argc!=3)
+if(!argc>2)
 {
-cout<<"need 2 command prompt arguments, wordsearch file and output file."<<"\n";
+cout<<"need an input file.."<<"\n";
 return 0;
 }
-
+for(int runCount = 1; runCount < argc; runCount++)
+{
 //Continue on in program, declaring the variables I will need.
 ifstream in;
 ofstream out;
@@ -92,7 +103,7 @@ int wbanklen = 0;
 int height = 0;//Word search height.
 
 //Trying to open the ifstream to the file input and read each line into the vector of sting, keep track of size before \n.
-in.open(argv[1]);
+in.open(argv[runCount]);
 if(in.is_open())
 {
 	cout<<"Reading in the word search.\n";
@@ -202,7 +213,8 @@ else
 {
 	cout<<"File was not opened.\n";
 }
-out.open(argv[2]);
+string tempfname = argv[runCount];
+out.open(reformatName(tempfname).c_str());
 //Write each word to the file.
 if(out)
 {
@@ -224,5 +236,6 @@ out.close();
 
 //End Program
 delete[] wordBank;
+}
 return 0;
 }
