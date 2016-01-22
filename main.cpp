@@ -5,11 +5,7 @@
 #include <vector>
 
 using namespace std;
-//Basic function to determine if the char getting input is a digit
-bool isNum(char c) 
-{
-   return (c >='0' && c <='9');
-}
+//TYPE DECLARATIONS BEGIN
 
 //Creating a Point type to store in my vector of answers
 typedef std::pair<int, int> Point;
@@ -21,6 +17,11 @@ struct foundword
 	Point location;
 	string dir;
 };
+
+//TYPE DECLARATIONS END
+
+//FUNCTION DECLARATIONS BEGIN
+
 //Creating a pseudo constructor to make it easier to get a foundword
 foundword create_found_word(string word, int x,int y, string dir)
 {
@@ -28,15 +29,25 @@ foundword create_found_word(string word, int x,int y, string dir)
 	Point temp(x,y);
 	toreturn.word = word;
 	toreturn.location = temp; 
+	toreturn.dir = dir;
 	return toreturn;
 }
 
-//Function to write a foundword to a file
-void write_found_word(foundword wfound, ofstream file)
+//Basic function to determine if the char getting input is a digit
+bool isNum(char c) 
 {
-cout<<wfound.word<<"|"<<wfound.location.first<<"|"<<wfound.location.second<<"|"<<wfound.dir<<"\n";
+   return (c >='0' && c <='9');
 }
 
+//Function to write a foundword to a file
+void write_found_word(const foundword wfound, ofstream& file)
+{
+file<<wfound.word<<"|"<<wfound.location.first<<"|"<<wfound.location.second<<"|"<<wfound.dir<<"\n";
+}
+
+//FUNCTION DECLARATIONS END
+
+//MAIN BEGIN
 int main(int argc, char*argv[])
 {
 //Check to ensure that there are two strings passed to the program, the input file then output file.
@@ -48,10 +59,13 @@ return 0;
 
 //Continue on in program, declaring the variables I will need.
 ifstream in;
+ofstream out;
 vector<string> wordSearch;
 string* wordBank;
 vector<foundword> found;
+
 int wbanklen = 0;
+int height = 0;//Word search height.
 
 //Trying to open the ifstream to the file input and read each line into the vector of sting, keep track of size before \n.
 in.open(argv[1]);
@@ -66,11 +80,14 @@ if(in.is_open())
 		{
 		done = true;
 		wbanklen = atoi(x.c_str());
+		//Read in leangth and convert to wbanklen using cstdlib
+		//break was neccesary to prevent another the first word in the word bank from being thrown away
 		break;
 		}
 		else
 		{
 		wordSearch.push_back(x);
+		height++;
 		}
 	}
 
@@ -80,6 +97,7 @@ if(in.is_open())
 	{
 		cout<<wordSearch[i]<<"\n";
 	}
+	cout<<"Height: "<<height<<"\n";
 	cout<<"\n"<<"Reading in word bank.\n";
 //Reading in the word bank.
 	wordBank = new string[wbanklen];
@@ -90,17 +108,60 @@ if(in.is_open())
 		wordBank[i] = word;
 	}	
 	in.close();
+	//file input is now complete.
 	cout<<"Full word bank:\n";
 	for(int i = 0; i < wbanklen;i++)
 	{
 		cout<<wordBank[i]<<"\n";
 	}
 	cout<<"Beginning to solve word search.\n";
+	for(int i = 0; i <height;i++)
+	{
+		//Loop through each row
+		for(int j = 0; j < wordSearch[0].length(); j++)
+		{
+			//Loop through each column
+			for(int t = 0; t < wbanklen;t++)
+			{
+				//Check each word in word bank.
+				if(wordSearch[i][j] == wordBank[t][0])
+				{
+					cout<<"Found the letter: "<<wordBank[t][0]<<"\n";
+					if(wordBank[t].length()<=1)
+					{
+						found.push_back(create_found_word(wordBank[t],i,j,"N/A"));
+					}
+					else
+					{
+						//Find direction
+						//
+						for(int z = 0; z < wordBank[t].length(); z++)
+						{
+						
+						}
+					}
+				}
+			}
+		}
+	}	
 }
 else
 {
 	cout<<"File was not opened.\n";
 }
+
+out.open(argv[2]);
+//Write each word found to the file.
+if(out)
+{
+for(int i = 0; i < found.size(); i++)
+{
+	write_found_word(found[i],out);
+}
+}
+out.close();
+
 //End Program
+delete[] wordBank;
 return 0;
 }
