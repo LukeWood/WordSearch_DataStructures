@@ -183,10 +183,6 @@ if(in.is_open())
 										{
 										for(int z = 2; z <= wlen&&isRight; z++)
 										{
-											if(x == -1)
-											{
-											cout<<wordBank[t][z]<<" and "<<wordSearch[i+x*z][j+y*z]<<"\n";
-											}
 											//Determine if each character in the wordBank matches
 											if(!(wordBank[t][z]==wordSearch[i+(x*z)][j+(y*z)]))
 											{
